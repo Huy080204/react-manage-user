@@ -2,11 +2,25 @@ import React, { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 import Table from "react-bootstrap/Table";
 import { fetchAllUser } from "../service/UserService";
+import ModalAddNew from "./ModalAddNew";
 
 const TableUser = () => {
 	const [listUsers, setListUsers] = useState([]);
 	const [totalUsers, setTotalUSers] = useState(0);
 	const [totalPages, setTotalPages] = useState(0);
+	const [isShowModalAddNew, setIsShowModalAddNew] = useState(false);
+
+	const handleShowModal = () => {
+		setIsShowModalAddNew(true);
+	};
+
+	const handleCloseModal = () => {
+		setIsShowModalAddNew(false);
+	};
+
+	const handleUpdateTable = (user) => {
+		setListUsers([user, ...listUsers]);
+	};
 
 	useEffect(() => {
 		getAllUsers(1);
@@ -14,7 +28,6 @@ const TableUser = () => {
 
 	const getAllUsers = async (page) => {
 		let res = await fetchAllUser(page);
-		console.log(">>> check new:", res);
 
 		if (res && res.data) {
 			setTotalUSers(res.total);
@@ -22,15 +35,19 @@ const TableUser = () => {
 			setListUsers(res.data);
 		}
 	};
-	console.log(">>> list: ", listUsers);
 
 	const handlePageClick = (event) => {
-		console.log("Event: ", event);
 		getAllUsers(+event.selected + 1);
 	};
 
 	return (
 		<div>
+			<div className="my-3 d-flex justify-content-between">
+				<h3>List users:</h3>
+				<button className="btn btn-primary" onClick={handleShowModal}>
+					Add new
+				</button>
+			</div>
 			<Table striped bordered hover>
 				<thead>
 					<tr>
@@ -75,6 +92,11 @@ const TableUser = () => {
 				activeClassName="active"
 				renderOnZeroPageCount={null}
 			/>
+			<ModalAddNew
+				show={isShowModalAddNew}
+				handleClose={handleCloseModal}
+				handleUpdateTable={handleUpdateTable}
+			></ModalAddNew>
 		</div>
 	);
 };
