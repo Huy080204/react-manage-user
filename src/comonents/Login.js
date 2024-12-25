@@ -26,7 +26,7 @@ const Login = () => {
 		}
 		let res = await loginAPI(email, password);
 		if (res && res.token) {
-			login(email, res.token);
+			login(email.trim(), res.token);
 			console.log(">>> user login: ", user);
 
 			toast.success("Login success");
@@ -36,6 +36,16 @@ const Login = () => {
 		}
 		setLoadingAPI(false);
 	};
+
+	const handlePressEnter = (event) => {
+		console.log();
+
+		if (event && event.key === "Enter") {
+			console.log("Enter key pressed");
+			handleLogin();
+		}
+	};
+
 	return (
 		<div>
 			<div className="login-container col-12 col-sm-3">
@@ -58,6 +68,7 @@ const Login = () => {
 					onChange={(event) => {
 						setPassword(event.target.value);
 					}}
+					onKeyDown={(event) => handlePressEnter(event)}
 				/>
 				<button
 					className="button-login"
