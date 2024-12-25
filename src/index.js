@@ -5,15 +5,22 @@ import reportWebVitals from "./reportWebVitals";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { BrowserRouter } from "react-router-dom";
 import { UserProvider } from "./context/UserContext";
+import store from "./redux/store";
+import { Provider } from "react-redux";
+import ErrorBoundary from "./comonents/ErrorBoundary/Error";
 
 ReactDOM.render(
-	<React.StrictMode>
-		<UserProvider>
-			<BrowserRouter>
-				<App />
-			</BrowserRouter>
-		</UserProvider>
-	</React.StrictMode>,
+	<Provider store={store}>
+		<React.StrictMode>
+			<UserProvider>
+				<BrowserRouter>
+					<ErrorBoundary>
+						<App />
+					</ErrorBoundary>
+				</BrowserRouter>
+			</UserProvider>
+		</React.StrictMode>
+	</Provider>,
 	document.getElementById("root")
 );
 

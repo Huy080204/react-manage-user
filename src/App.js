@@ -4,18 +4,24 @@ import Header from "./comonents/Header";
 import { ToastContainer, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "@fortawesome/fontawesome-free/css/all.css";
-import { UserContext } from "./context/UserContext";
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 import AppRoutes from "./routes/AppRoutes";
+import { useDispatch, useSelector } from "react-redux";
+import { handleRefreshRedux } from "./redux/actions/userAction";
 
 function App() {
-	const { user, login } = useContext(UserContext);
-	console.log(user);
+	const a = null;
+	console.log(a.ac);
+	const dispatch = useDispatch();
+	const account = useSelector((state) => state.user.account);
+
 	useEffect(() => {
 		if (localStorage.getItem("token")) {
-			login(localStorage.getItem("email"), localStorage.getItem("token"));
+			dispatch(handleRefreshRedux());
 		}
 	}, []);
+
+	console.log(">>> check account APP: ", account);
 
 	return (
 		<div className="app-container me-4">

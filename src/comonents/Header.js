@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useEffect } from "react";
 import "../assets/scss/Header.scss";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
@@ -6,12 +6,26 @@ import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import logoApp from "../assets/images/logo192.png";
 import { NavLink, useNavigate } from "react-router-dom";
-import { UserContext } from "../context/UserContext";
+import { useDispatch, useSelector } from "react-redux";
+import { handleLogoutRedux } from "../redux/actions/userAction";
+import { toast } from "react-toastify";
 
 const Header = () => {
 	const navigate = useNavigate();
-	const { user, logout } = useContext(UserContext);
-	console.log(">>> check user: ", user);
+	const dispatch = useDispatch();
+	const account = useSelector((state) => state.user.account);
+	console.log(">>> check account: ", account);
+
+	useEffect(() => {
+		if (
+			account &&
+			account.auth === false &&
+			window.location.pathname !== "/login"
+		) {
+			navigate("/");
+			toast.success("Logout success");
+		}
+	}, [account]);
 
 	return (
 		<Navbar expand="lg" className="bg-body-tertiary">
@@ -29,7 +43,8 @@ const Header = () => {
 				<Navbar.Toggle aria-controls="basic-navbar-nav" />
 				<Navbar.Collapse id="basic-navbar-nav">
 					<Nav className="me-auto" activeKey="/users">
-						{((user && user.auth) || window.location.pathname === "/") && (
+						{((account && account.auth) ||
+							window.location.pathname === "/") && (
 							<>
 								<NavLink to="/" className="nav-link">
 									Home
@@ -37,19 +52,22 @@ const Header = () => {
 								<NavLink to="/users" className="nav-link">
 									Manage Users
 								</NavLink>
-								<p className="nav-link info-email">Welcome {user.email}</p>
 							</>
 						)}
 					</Nav>
 					<Nav>
+						{account && account.email && (
+							<p className="nav-link info-email">Welcome {account.email}</p>
+						)}
 						<NavDropdown title="Actions" id="basic-nav-dropdown">
 							<NavDropdown.Item href="/">somethings...</NavDropdown.Item>
 							<NavDropdown.Divider />
-							{user && user.auth === true ? (
+							{account && account.auth === true ? (
 								<NavDropdown.Item
 									onClick={() => {
-										logout();
-										navigate("/");
+										console.log("yes");
+										dispatch(handleLogoutRedux());
+										console.log("asc");
 									}}
 								>
 									Logout

@@ -1,40 +1,30 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../assets/scss/Login.scss";
-import { loginAPI } from "../service/UserService";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { UserContext } from "../context/UserContext";
+import { handleLoginRedux } from "../redux/actions/userAction";
+import { useDispatch, useSelector } from "react-redux";
+
 const Login = () => {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
-	const [loadingAPI, setLoadingAPI] = useState(false);
+	const isLoading = useSelector((state) => state.user.isLoading);
+	const account = useSelector((state) => state.user.account);
 	const navigate = useNavigate();
+	const dispatch = useDispatch();
 
 	useEffect(() => {
-		if (localStorage.getItem("token")) {
+		if (account && account.auth) {
 			navigate("/");
 		}
-	}, []);
+	}, [account]);
 
-	const { user, login } = useContext(UserContext);
-
-	const handleLogin = async () => {
-		setLoadingAPI(true);
+	const handleLogin = () => {
 		if (!email || !password) {
 			toast.error("Missing email or password");
 			return;
 		}
-		let res = await loginAPI(email, password);
-		if (res && res.token) {
-			login(email.trim(), res.token);
-			console.log(">>> user login: ", user);
-
-			toast.success("Login success");
-			navigate("/");
-		} else if (res && res.status === 400) {
-			toast.error(res.data.error);
-		}
-		setLoadingAPI(false);
+		dispatch(handleLoginRedux(email, password));
 	};
 
 	const handlePressEnter = (event) => {
@@ -72,10 +62,10 @@ const Login = () => {
 				/>
 				<button
 					className="button-login"
-					disabled={loadingAPI || !(email && password)}
+					disabled={isLoading || !(email && password)}
 					onClick={handleLogin}
 				>
-					{loadingAPI ? (
+					{isLoading ? (
 						<i className="fa-solid fa-sync fa-spin"></i>
 					) : (
 						<span>Login</span>
