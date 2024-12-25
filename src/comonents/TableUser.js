@@ -5,11 +5,12 @@ import { fetchAllUser } from "../service/UserService";
 import ModalAddNew from "./ModalAddNew";
 import ModalEdit from "./ModalEdit";
 import ModalDelete from "./ModalDelete";
-import _, { clone } from "lodash";
+import _ from "lodash";
 import { Button, Form } from "react-bootstrap";
-import { CSVLink, CSVDownload } from "react-csv";
+import { CSVLink } from "react-csv";
 import { toast } from "react-toastify";
 import Papa from "papaparse";
+import "../assets/scss/Table.scss";
 
 const TableUser = () => {
 	const [listUsers, setListUsers] = useState([]);
@@ -154,7 +155,7 @@ const TableUser = () => {
 					const formattedData = data.map((row) => {
 						const formattedRow = {};
 						headers.forEach((header, index) => {
-							formattedRow[formattedHeaders[index]] = row[header]; // Gán giá trị với header mới
+							formattedRow[formattedHeaders[index]] = row[header];
 						});
 						return formattedRow;
 					});
@@ -167,9 +168,9 @@ const TableUser = () => {
 
 	return (
 		<div>
-			<div className="my-3 d-flex justify-content-between">
+			<div className="my-3 d-sm-flex justify-content-between">
 				<h3>List users:</h3>
-				<div>
+				<div className="mt-2 mt-sm-0">
 					<label htmlFor="import-file" className="btn btn-warning">
 						<i className="fa-solid fa-file-import me-2"></i>
 						Import
@@ -204,7 +205,7 @@ const TableUser = () => {
 				</div>
 			</div>
 			<div className="row my-3">
-				<div className="col-4">
+				<div className="col-12 col-sm-4">
 					<Form className="d-flex ">
 						<Form.Control
 							type="search"
@@ -217,81 +218,83 @@ const TableUser = () => {
 					</Form>
 				</div>
 			</div>
-			<Table striped bordered hover>
-				<thead>
-					<tr>
-						<th>
-							<div className="d-flex justify-content-between mx-1">
-								<span>ID</span>
-								<div className="sort-icon">
-									<i
-										className="fa-solid fa-arrow-up mx-1"
-										onClick={() => {
-											handleSort("desc", "id");
-										}}
-									></i>
-									<i
-										className="fa-solid fa-arrow-down"
-										onClick={() => {
-											handleSort("asc", "id");
-										}}
-									></i>
+			<div className="customize-table">
+				<Table striped bordered hover>
+					<thead>
+						<tr>
+							<th>
+								<div className="d-flex justify-content-between mx-1">
+									<span>ID</span>
+									<div className="sort-icon">
+										<i
+											className="fa-solid fa-arrow-up mx-1"
+											onClick={() => {
+												handleSort("desc", "id");
+											}}
+										></i>
+										<i
+											className="fa-solid fa-arrow-down"
+											onClick={() => {
+												handleSort("asc", "id");
+											}}
+										></i>
+									</div>
 								</div>
-							</div>
-						</th>
-						<th>Email</th>
-						<th>
-							<div className="d-flex justify-content-between mx-1">
-								<span>First Name</span>
-								<div className="sort-icon">
-									<i
-										className="fa-solid fa-arrow-up mx-1"
-										onClick={() => {
-											handleSort("desc", "first_name");
-										}}
-									></i>
-									<i
-										className="fa-solid fa-arrow-down"
-										onClick={() => {
-											handleSort("asc", "first_name");
-										}}
-									></i>
+							</th>
+							<th>Email</th>
+							<th>
+								<div className="d-flex justify-content-between mx-1">
+									<span>First Name</span>
+									<div className="sort-icon">
+										<i
+											className="fa-solid fa-arrow-up mx-1"
+											onClick={() => {
+												handleSort("desc", "first_name");
+											}}
+										></i>
+										<i
+											className="fa-solid fa-arrow-down"
+											onClick={() => {
+												handleSort("asc", "first_name");
+											}}
+										></i>
+									</div>
 								</div>
-							</div>
-						</th>
-						<th>Last Name</th>
-						<th>Actions</th>
-					</tr>
-				</thead>
-				<tbody>
-					{listUsers &&
-						listUsers.length > 0 &&
-						listUsers.map((item, index) => {
-							return (
-								<tr key={`user ${index}`}>
-									<td>{item.id}</td>
-									<td>{item.email}</td>
-									<td>{item.first_name}</td>
-									<td>{item.last_name}</td>
-									<td>
-										<button
-											className="btn btn-warning mx-3"
-											onClick={() => handleEditUser(item)}
-										>
-											Edit
-										</button>
-										<button
-											className="btn btn-danger"
-											onClick={() => handleDeleteUser(item)}
-										>
-											Delete
-										</button>
-									</td>
-								</tr>
-							);
-						})}
-				</tbody>
-			</Table>
+							</th>
+							<th>Last Name</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						{listUsers &&
+							listUsers.length > 0 &&
+							listUsers.map((item, index) => {
+								return (
+									<tr key={`user ${index}`}>
+										<td>{item.id}</td>
+										<td>{item.email}</td>
+										<td>{item.first_name}</td>
+										<td>{item.last_name}</td>
+										<td>
+											<button
+												className="btn btn-warning mx-3"
+												onClick={() => handleEditUser(item)}
+											>
+												Edit
+											</button>
+											<button
+												className="btn btn-danger"
+												onClick={() => handleDeleteUser(item)}
+											>
+												Delete
+											</button>
+										</td>
+									</tr>
+								);
+							})}
+					</tbody>
+				</Table>
+			</div>
 			<ReactPaginate
 				nextLabel="next >"
 				onPageChange={handlePageClick}
@@ -311,6 +314,7 @@ const TableUser = () => {
 				containerClassName="pagination"
 				activeClassName="active"
 				renderOnZeroPageCount={null}
+				className="customize-pagination"
 			/>
 			<ModalAddNew
 				show={isShowModalAddNew}

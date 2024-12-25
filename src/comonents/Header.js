@@ -49,7 +49,7 @@ const Header = () => {
 								<NavDropdown.Item
 									onClick={() => {
 										logout();
-										navigate("/login");
+										navigate("/");
 									}}
 								>
 									Logout
